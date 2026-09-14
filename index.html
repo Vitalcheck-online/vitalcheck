@@ -125,7 +125,7 @@
                 <p class="step-kicker">Bonusvoucher (im Wert von 19,99 EUR)</p>
 
                 <label class="full">
-                  Vouchernummer (optional)
+                  Vouchernummer *
                   <input
                     type="text"
                     name="Vouchernummer"
@@ -134,6 +134,7 @@
                     inputmode="numeric"
                     autocomplete="off"
                     placeholder="z. B. 123456"
+                    required
                   >
                 </label>
               </div>
@@ -317,7 +318,11 @@
               </div>
             </section>
 
-            <section class="step" data-auto-advance="true">
+            <section
+              class="step"
+              data-question-type="consultation"
+              data-auto-advance="true"
+            >
               <p class="step-kicker">Frage 25</p>
               <h2>
                 Möchten Sie nach der Auswertung Ihres Vitalchecks eine persönliche
@@ -344,6 +349,35 @@
                   >
                   <span>Nein</span>
                 </label>
+              </div>
+
+              <div class="conditional-box" data-consultation-followup hidden>
+                <p class="conditional-title">
+                  Sind Sie sicher, dass Sie keine persönliche Beratung zur
+                  Besprechung Ihrer Vitalcheck-Auswertung wünschen?
+                </p>
+
+                <div class="choice-grid two">
+                  <label class="option-card">
+                    <input
+                      type="radio"
+                      name="Beraterkontakt bestaetigt"
+                      value="Ja"
+                      data-conditional-required
+                    >
+                    <span>Ja, ich bin sicher</span>
+                  </label>
+
+                  <label class="option-card">
+                    <input
+                      type="radio"
+                      name="Beraterkontakt bestaetigt"
+                      value="Nein"
+                      data-conditional-required
+                    >
+                    <span>Nein, bitte kontaktieren</span>
+                  </label>
+                </div>
               </div>
             </section>
 
@@ -455,6 +489,6 @@
     src="https://cdn.gtranslate.net/widgets/latest/float.js"
     defer
   ></script>
-  <script src="app.js?v=activity-labels-20260911"></script>
+  <script src="app.js?v=voucher-required-consultation-20260914"></script>
 </body>
 </html>
