@@ -77,7 +77,12 @@ const questions = [
   },
   {
     name: "Treiben Ihre Kinder Sport",
-    text: "Treiben Ihre Kinder Sport?"
+    text: "Treiben Ihre Kinder Sport?",
+    options: [
+      { value: "Ja", label: "Ja" },
+      { value: "Nein", label: "Nein" },
+      { value: "Ich habe keine Kinder", label: "Ich habe keine Kinder" }
+    ]
   },
   {
     name: "Haben Sie ein Kind mit Konzentrations oder Aufmerksamkeitsstoerungen",
@@ -600,7 +605,7 @@ form.addEventListener("keydown", event => {
 form.addEventListener("input", event => {
   const field = event.target;
 
-  if (field.name === "Vouchernummer") {
+  if (field.name === "Gutscheincode") {
     field.value = field.value.replace(/\D/g, "").slice(0, 6);
   }
 });
@@ -689,7 +694,7 @@ function getCustomerSalutation(form) {
 }
 
 async function sendConfirmationEmail(form) {
-  const partner = getVoucherPartner(form.elements["Vouchernummer"]?.value);
+  const partner = getVoucherPartner(form.elements["Gutscheincode"]?.value);
   const data = new FormData();
 
   data.set("access_key", confirmationAccessKey);
