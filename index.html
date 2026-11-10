@@ -245,8 +245,8 @@
             <section class="step" data-auto-advance="true">
               <p class="step-kicker">Einzelauswahl</p>
               <h2>
-                Wie viel ist Ihnen Ihr Wohlbefinden (und das Wohlbefinden Ihrer
-                Familie) pro Tag wert?
+                Wie viel sind Sie bereit, pro Tag in Ihr Wohlbefinden und das
+                Wohlbefinden Ihrer Familie zu investieren?
               </h2>
 
               <div class="choice-grid">
@@ -282,40 +282,21 @@
                   <input
                     type="radio"
                     name="Wohlbefinden pro Tag"
-                    value="Mehr als 7 Euro pro Tag"
+                    value="Anderer Betrag"
+                    data-investment-other
                   >
-                  <span>Mehr als 7 € pro Tag</span>
+                  <span>Anderer Betrag</span>
                 </label>
               </div>
-            </section>
-
-            <section class="step" data-auto-advance="true">
-              <p class="step-kicker">Abschlussfrage</p>
-              <h2>
-                Wenn Sie Ihre aktuelle Situation positiv verändern könnten,
-                würden Sie diese Möglichkeit nutzen?
-              </h2>
-
-              <div class="choice-grid two">
-                <label class="option-card">
-                  <input
-                    type="radio"
-                    name="Moeglichkeit nutzen"
-                    value="Ja"
-                    required
-                  >
-                  <span>Ja</span>
-                </label>
-
-                <label class="option-card">
-                  <input
-                    type="radio"
-                    name="Moeglichkeit nutzen"
-                    value="Nein"
-                  >
-                  <span>Nein</span>
-                </label>
-              </div>
+              <label class="full investment-other" hidden>
+                Anderer Betrag pro Tag
+                <input
+                  type="text"
+                  name="Wohlbefinden anderer Betrag"
+                  placeholder="z. B. 10 €"
+                  data-investment-other-field
+                >
+              </label>
             </section>
 
             <section
@@ -323,7 +304,7 @@
               data-question-type="consultation"
               data-auto-advance="true"
             >
-              <p class="step-kicker">Frage 25</p>
+              <p class="step-kicker">Beratung</p>
               <h2>
                 Möchten Sie nach der Auswertung Ihres Vitalchecks eine persönliche
                 und ausführliche Beratung durch den Berater erhalten, der Ihnen
@@ -489,6 +470,6 @@
     src="https://cdn.gtranslate.net/widgets/latest/float.js"
     defer
   ></script>
-  <script src="app.js?v=gutscheincode-kinder-optionen-20260917"></script>
+  <script src="app.js?v=vitalcheck-neue-fragen-20261110"></script>
 </body>
 </html>
