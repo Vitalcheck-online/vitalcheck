@@ -12,12 +12,15 @@ const questions = [
   { name: "Leiden Sie unter Arthrose oder Arthritis", text: "Leiden Sie unter Arthrose oder Arthritis?" },
   { name: "Treiben Sie regelmaessig Sport", text: "Treiben Sie regelmäßig Sport?", type: "sport" },
   { name: "Essen Sie zwei bis dreimal pro Woche frischen Lachs Makrele oder Thunfisch", text: "Essen Sie zwei- bis dreimal pro Woche frischen Lachs, Makrele oder Thunfisch?" },
-  { name: "Leiden Sie als Frau unter typischen peri oder menopausalen Beschwerden", text: "Leiden Sie als Frau unter typischen peri- oder menopausalen Beschwerden?", type: "menopause" },
-  { name: "Haben Sie regelmaessig Menstruationsbeschwerden", text: "Haben Sie regelmäßig Menstruationsbeschwerden?", type: "menstruation" },
-  { name: "Moechten Sie als Mann Ihren Testosteronspiegel verbessern", text: "Möchten Sie als Mann Ihren Testosteronspiegel verbessern?", options: [
+  { name: "Geschlecht", text: "Welches Geschlecht haben Sie?", type: "gender", options: [
+    { value: "männlich", label: "Männlich" },
+    { value: "weiblich", label: "Weiblich" }
+  ] },
+  { name: "Leiden Sie als Frau unter typischen peri oder menopausalen Beschwerden", text: "Leiden Sie unter typischen peri- oder menopausalen Beschwerden?", type: "menopause", gender: "weiblich" },
+  { name: "Haben Sie regelmaessig Menstruationsbeschwerden", text: "Haben Sie regelmäßig Menstruationsbeschwerden?", type: "menstruation", gender: "weiblich" },
+  { name: "Moechten Sie als Mann Ihren Testosteronspiegel verbessern", text: "Möchten Sie Ihren Testosteronspiegel verbessern?", gender: "männlich", options: [
     { value: "Ja", label: "Ja" },
-    { value: "Nein", label: "Nein" },
-    { value: "Ich bin weiblich", label: "Ich bin weiblich" }
+    { value: "Nein", label: "Nein" }
   ] },
   { name: "Moechten Sie Ihr Gewicht optimieren", text: "Möchten Sie Ihr Gewicht optimieren?", type: "weight" },
   { name: "Gibt es Lebensmittel die Sie nicht vertragen oder aufgrund Ihrer Ernaehrungsform nicht essen", text: "Gibt es Lebensmittel, die Sie nicht vertragen oder aufgrund Ihrer Ernährungsform nicht essen?", type: "intolerance" },
@@ -107,12 +110,14 @@ function createStepKicker(index) {
 
 function createStandardQuestion(question, index) {
   const options = question.options || DEFAULT_OPTIONS;
+  const genderAttribute = question.gender ? ` data-gender="${question.gender}"` : "";
 
   return `
     <section
       class="step health-question"
       data-question-type="standard"
       data-auto-advance="true"
+      ${genderAttribute}
     >
       ${createStepKicker(index)}
 
@@ -303,7 +308,7 @@ function createSportQuestion(question, index) {
 
 function createMenopauseQuestion(question, index) {
   return `
-    <section class="step health-question" data-question-type="menopause" data-auto-advance="conditional">
+    <section class="step health-question" data-question-type="menopause" data-auto-advance="conditional" data-gender="weiblich">
       ${createStepKicker(index)}
       <h2>${question.text}</h2>
       <div class="choice-grid frequency-grid">
@@ -331,12 +336,11 @@ function createMenstruationQuestion(question, index) {
     { value: "Ja", label: "Ja" },
     { value: "Öfter", label: "Öfter" },
     { value: "Gelegentlich", label: "Gelegentlich" },
-    { value: "Nein", label: "Nein" },
-    { value: "Ich bin männlich", label: "Ich bin männlich" }
+    { value: "Nein", label: "Nein" }
   ];
 
   return `
-    <section class="step health-question" data-question-type="standard" data-auto-advance="true">
+    <section class="step health-question" data-question-type="standard" data-auto-advance="true" data-gender="weiblich">
       ${createStepKicker(index)}
       <h2>${question.text}</h2>
       <div class="choice-grid frequency-grid">
@@ -509,6 +513,46 @@ const steps = [...document.querySelectorAll(".step")];
 let currentStep = 0;
 let autoAdvanceTimer = null;
 
+function getSelectedGender() {
+  return form.elements["Geschlecht"]?.value || "";
+}
+
+function updateGenderVisibility() {
+  const gender = getSelectedGender();
+
+  steps.forEach(step => {
+    const requiredGender = step.dataset.gender;
+
+    if (!requiredGender) {
+      return;
+    }
+
+    const visible = requiredGender === gender;
+    step.hidden = !visible;
+    updateConditionalRequirement(step, visible);
+
+    if (!visible) {
+      step.querySelectorAll("input, select, textarea").forEach(field => {
+        if (field.type === "radio" || field.type === "checkbox") {
+          field.checked = false;
+        } else {
+          field.value = "";
+        }
+      });
+    }
+  });
+}
+
+function findVisibleStep(start, direction) {
+  let index = start;
+
+  while (index >= 0 && index < steps.length && steps[index].hidden) {
+    index += direction;
+  }
+
+  return index;
+}
+
 function showError(message) {
   formError.textContent = message;
 }
@@ -641,14 +685,16 @@ function updateWizard() {
   clearAutoAdvanceTimer();
 
   steps.forEach((step, index) => {
-    step.classList.toggle("active", index === currentStep);
+    step.classList.toggle("active", index === currentStep && !step.hidden);
   });
 
-  const total = steps.length;
+  const visibleSteps = steps.filter(step => !step.hidden);
+  const visiblePosition = Math.max(0, visibleSteps.indexOf(steps[currentStep]));
+  const total = visibleSteps.length;
   const percent =
-    total > 1 ? Math.round((currentStep / (total - 1)) * 100) : 100;
+    total > 1 ? Math.round((visiblePosition / (total - 1)) * 100) : 100;
 
-  stepText.textContent = `Schritt ${currentStep + 1} von ${total}`;
+  stepText.textContent = `Schritt ${visiblePosition + 1} von ${total}`;
   progressText.textContent = `${percent}%`;
   progressFill.style.width = `${percent}%`;
 
@@ -673,15 +719,19 @@ function nextStep() {
     return;
   }
 
-  if (currentStep < steps.length - 1) {
-    currentStep += 1;
+  const next = findVisibleStep(currentStep + 1, 1);
+
+  if (next < steps.length) {
+    currentStep = next;
     updateWizard();
   }
 }
 
 function prevStep() {
-  if (currentStep > 0) {
-    currentStep -= 1;
+  const previous = findVisibleStep(currentStep - 1, -1);
+
+  if (previous >= 0) {
+    currentStep = previous;
     updateWizard();
   }
 }
@@ -1014,6 +1064,12 @@ form.addEventListener("change", event => {
     return;
   }
 
+  if (field.name === "Geschlecht") {
+    updateGenderVisibility();
+    scheduleNextStep();
+    return;
+  }
+
   if (handlePrioritySelection(field)) {
     return;
   }
@@ -1123,15 +1179,11 @@ function getVoucherPartner(voucherValue) {
 }
 
 function getCustomerSalutation(form) {
-  const selectedValues = Array.from(
-    form.querySelectorAll('input[type="radio"]:checked')
-  ).map(field => field.value);
-
-  if (selectedValues.some(value => /Ich bin maennlich|Ich bin männlich/i.test(value))) {
+  if (form.elements["Geschlecht"]?.value === "männlich") {
     return "Herr";
   }
 
-  if (selectedValues.some(value => /Ich bin weiblich/i.test(value))) {
+  if (form.elements["Geschlecht"]?.value === "weiblich") {
     return "Frau";
   }
 
@@ -1234,6 +1286,7 @@ startButton.addEventListener("click", () => {
 window.history.scrollRestoration = "manual";
 
 document.addEventListener("DOMContentLoaded", () => {
+  updateGenderVisibility();
   updateWizard();
 
   window.setTimeout(() => {
