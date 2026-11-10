@@ -545,6 +545,25 @@ function updateGenderVisibility() {
   updateHealthQuestionLabels();
 }
 
+function updateChildrenVisibility() {
+  const hasChildren = form.elements["Haben Sie Kinder"]?.value === "Ja";
+  const attentionStep = steps.find(
+    step => step.dataset.questionType === "child-attention"
+  );
+
+  if (!attentionStep) {
+    return;
+  }
+
+  attentionStep.hidden = !hasChildren;
+
+  if (!hasChildren) {
+    resetConditionalFields(attentionStep);
+  }
+
+  updateHealthQuestionLabels();
+}
+
 function updateHealthQuestionLabels() {
   const visibleHealthSteps = steps.filter(
     step => step.classList.contains("health-question") && !step.hidden
@@ -925,6 +944,7 @@ function handleChildrenQuestion(field, step) {
   if (field.name === "Haben Sie Kinder") {
     const active = field.value === "Ja";
     toggleConditionalBox(box, active);
+    updateChildrenVisibility();
 
     if (!active) {
       resetConditionalFields(box);
@@ -1303,6 +1323,7 @@ window.history.scrollRestoration = "manual";
 
 document.addEventListener("DOMContentLoaded", () => {
   updateGenderVisibility();
+  updateChildrenVisibility();
   updateWizard();
 
   window.setTimeout(() => {
