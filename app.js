@@ -396,11 +396,11 @@ function createChildrenQuestion(question, index) {
         <div class="grid">
           <label>
             Kinder bis 12 Jahre
-            <input type="number" name="Kinder bis 12 Jahre" min="0" max="20" step="1" data-conditional-required>
+            <input type="number" name="Kinder bis 12 Jahre" min="0" max="20" step="1">
           </label>
           <label>
             Kinder über 12 Jahre
-            <input type="number" name="Kinder ueber 12 Jahre" min="0" max="20" step="1" data-conditional-required>
+            <input type="number" name="Kinder ueber 12 Jahre" min="0" max="20" step="1">
           </label>
         </div>
         <p class="conditional-title">Treiben die Kinder Sport?</p>
@@ -688,6 +688,29 @@ function validateMinimumSelections(step) {
   return true;
 }
 
+function validateChildrenAgeCounts(step) {
+  if (step.dataset.questionType !== "children") {
+    return true;
+  }
+
+  if (form.elements["Haben Sie Kinder"]?.value !== "Ja") {
+    return true;
+  }
+
+  const ageFields = [
+    step.querySelector('[name="Kinder bis 12 Jahre"]'),
+    step.querySelector('[name="Kinder ueber 12 Jahre"]')
+  ].filter(Boolean);
+
+  if (ageFields.some(field => field.value.trim() !== "")) {
+    return true;
+  }
+
+  showError("Bitte geben Sie bei mindestens einer Altersgruppe die Kinderzahl an.");
+  ageFields[0]?.focus();
+  return false;
+}
+
 function validateCurrentStep() {
   const step = steps[currentStep];
 
@@ -714,6 +737,10 @@ function validateCurrentStep() {
   }
 
   if (!validateMinimumSelections(step)) {
+    return false;
+  }
+
+  if (!validateChildrenAgeCounts(step)) {
     return false;
   }
 
