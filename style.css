@@ -326,6 +326,10 @@ input[type=radio],input[type=checkbox]{
   gap:22px 16px;
 }
 
+[data-children-box] > .grid{
+  margin-bottom:28px;
+}
+
 .conditional-box .grid > label{
   display:flex;
   flex-direction:column;
@@ -348,6 +352,20 @@ input[type=radio],input[type=checkbox]{
 
 .conditional-box .grid > label select{
   cursor:pointer;
+}
+
+[data-children-sport-box]{
+  margin-top:28px;
+}
+
+[data-children-sport-box] > label{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+[data-children-sport-box] select{
+  margin-top:0;
 }
 
 .conditional-box .grid > label input:focus-visible,

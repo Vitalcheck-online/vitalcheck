@@ -776,11 +776,11 @@ function updateWizard() {
   progressText.textContent = `${percent}%`;
   progressFill.style.width = `${percent}%`;
 
-  prevBtn.style.visibility = currentStep === 0 ? "hidden" : "visible";
+  prevBtn.style.visibility = visiblePosition === 0 ? "hidden" : "visible";
   nextBtn.style.display =
-    currentStep === total - 1 ? "none" : "inline-flex";
+    visiblePosition === total - 1 ? "none" : "inline-flex";
   submitBtn.style.display =
-    currentStep === total - 1 ? "inline-flex" : "none";
+    visiblePosition === total - 1 ? "inline-flex" : "none";
 
   clearError();
 
