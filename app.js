@@ -642,6 +642,22 @@ function resetConditionalFields(container) {
   });
 }
 
+function clearHiddenConditionalRequirements() {
+  document
+    .querySelectorAll(".conditional-box[hidden], .nested-box[hidden]")
+    .forEach(resetConditionalFields);
+}
+
+function getInvalidFieldDescription(field) {
+  const heading = field
+    .closest(".step")
+    ?.querySelector("h2")
+    ?.textContent.replace(/\s+/g, " ")
+    .trim();
+
+  return heading || field.name || "Pflichtfeld";
+}
+
 function validateMinimumSelections(step) {
   const containers = [...step.querySelectorAll("[data-min-checked]")]
     .filter(container => !container.closest("[hidden]"));
@@ -1263,9 +1279,21 @@ form.addEventListener("submit", async event => {
     return;
   }
 
+  clearHiddenConditionalRequirements();
+
   if (!form.checkValidity()) {
-    showError("Bitte prüfen Sie Ihre Angaben.");
-    form.reportValidity();
+    const invalidField = [...form.querySelectorAll("input, select, textarea")].find(
+      field => !field.checkValidity() && !field.closest("[hidden]")
+    );
+
+    if (invalidField) {
+      showError(`Bitte prüfen Sie Ihre Angabe bei: ${getInvalidFieldDescription(invalidField)}.`);
+      invalidField.focus();
+      invalidField.reportValidity();
+    } else {
+      showError("Bitte prüfen Sie Ihre Angaben.");
+      form.reportValidity();
+    }
     return;
   }
 
@@ -1324,6 +1352,7 @@ window.history.scrollRestoration = "manual";
 document.addEventListener("DOMContentLoaded", () => {
   updateGenderVisibility();
   updateChildrenVisibility();
+  clearHiddenConditionalRequirements();
   updateWizard();
 
   window.setTimeout(() => {
