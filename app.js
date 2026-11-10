@@ -541,6 +541,22 @@ function updateGenderVisibility() {
       });
     }
   });
+
+  updateHealthQuestionLabels();
+}
+
+function updateHealthQuestionLabels() {
+  const visibleHealthSteps = steps.filter(
+    step => step.classList.contains("health-question") && !step.hidden
+  );
+
+  visibleHealthSteps.forEach((step, index) => {
+    const kicker = step.querySelector(".step-kicker");
+
+    if (kicker) {
+      kicker.textContent = `Gesundheitsfrage ${index + 1} von ${visibleHealthSteps.length}`;
+    }
+  });
 }
 
 function findVisibleStep(start, direction) {
