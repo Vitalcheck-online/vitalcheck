@@ -45,6 +45,7 @@ a:hover{text-decoration:underline}
 h1{
   max-width:860px;
   margin:0 auto;
+  color:var(--primary);
   font-size:clamp(2.5rem,7vw,5.4rem);
   line-height:.96;
   letter-spacing:-.07em;

@@ -16,7 +16,7 @@ const questions = [
     { value: "männlich", label: "Männlich" },
     { value: "weiblich", label: "Weiblich" }
   ] },
-  { name: "Leiden Sie als Frau unter typischen peri oder menopausalen Beschwerden", text: "Leiden Sie unter typischen peri- oder menopausalen Beschwerden?", type: "menopause", gender: "weiblich" },
+  { name: "Leiden Sie als Frau unter typischen peri oder menopausalen Beschwerden", text: "Leiden Sie unter typischen peri-, meno- oder postpausalen Beschwerden.", type: "menopause", gender: "weiblich" },
   { name: "Haben Sie regelmaessig Menstruationsbeschwerden", text: "Haben Sie regelmäßig Menstruationsbeschwerden?", type: "menstruation", gender: "weiblich" },
   { name: "Moechten Sie als Mann Ihren Testosteronspiegel verbessern", text: "Möchten Sie Ihren Testosteronspiegel verbessern?", gender: "männlich", options: [
     { value: "Ja", label: "Ja" },
@@ -105,7 +105,7 @@ function createCheckboxCard(name, value, label) {
 }
 
 function createStepKicker(index) {
-  return `<p class="step-kicker">Gesundheitsfrage ${index + 1} von ${questions.length}</p>`;
+  return `<p class="step-kicker">Vitalcheckfrage ${index + 1} von ${questions.length}</p>`;
 }
 
 function createStandardQuestion(question, index) {
@@ -573,7 +573,7 @@ function updateHealthQuestionLabels() {
     const kicker = step.querySelector(".step-kicker");
 
     if (kicker) {
-      kicker.textContent = `Gesundheitsfrage ${index + 1} von ${visibleHealthSteps.length}`;
+      kicker.textContent = `Vitalcheckfrage ${index + 1} von ${visibleHealthSteps.length}`;
     }
   });
 }
@@ -1325,7 +1325,7 @@ form.addEventListener("submit", async event => {
   }
 
   submitBtn.disabled = true;
-  submitBtn.textContent = "Wird gesendet...";
+  submitBtn.textContent = "Vitalcheck wird gesendet...";
 
   try {
     const data = new FormData(form);
@@ -1366,7 +1366,7 @@ form.addEventListener("submit", async event => {
     );
 
     submitBtn.disabled = false;
-    submitBtn.textContent = "Fitness-Check absenden";
+    submitBtn.textContent = "Vitalcheck absenden";
   }
 });
 
