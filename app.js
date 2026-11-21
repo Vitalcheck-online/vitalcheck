@@ -1046,44 +1046,6 @@ function handleEyesQuestion(field, step) {
   return true;
 }
 
-function handleConsultationQuestion(field, step) {
-  const followup = step.querySelector("[data-consultation-followup]");
-
-  if (!followup) {
-    return false;
-  }
-
-  if (field.name === "Auswertung angefordert") {
-    clearAutoAdvanceTimer();
-
-    const wantsConsultation = field.value === "Ja";
-
-    if (wantsConsultation) {
-      resetConditionalFields(followup);
-      followup.hidden = true;
-      scheduleNextStep();
-    } else {
-      followup.hidden = false;
-      updateConditionalRequirement(followup, true);
-      clearError();
-
-      window.setTimeout(() => {
-        followup.querySelector('input[type="radio"]')?.focus();
-      }, 50);
-    }
-
-    return true;
-  }
-
-  if (field.name === "Beraterkontakt bestaetigt") {
-    clearError();
-    scheduleNextStep();
-    return true;
-  }
-
-  return false;
-}
-
 nextBtn.addEventListener("click", nextStep);
 prevBtn.addEventListener("click", prevStep);
 
@@ -1194,13 +1156,6 @@ form.addEventListener("change", event => {
   }
 
   if (questionType === "eyes" && handleEyesQuestion(field, step)) {
-    return;
-  }
-
-  if (
-    questionType === "consultation" &&
-    handleConsultationQuestion(field, step)
-  ) {
     return;
   }
 
